@@ -1,4 +1,4 @@
-.PHONY: run build clean install reinstall test help
+.PHONY: run build clean install reinstall install-local uninstall-local test help
 
 APP_NAME = NetStat
 VENV = ./venv
@@ -11,7 +11,7 @@ build: ## Build standalone macOS app
 	./build.sh
 
 clean: ## Clean build artifacts
-	rm -rf build dist *.egg-info
+	rm -rf build dist *.egg-info *.icns *.iconset
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
 
@@ -20,6 +20,12 @@ reinstall: ## Clean and reinstall venv
 	python3 -m venv $(VENV)
 	$(VENV)/bin/pip install --upgrade pip
 	$(VENV)/bin/pip install -r requirements.txt
+
+install-local: build ## Install app to /Applications
+	cp -R dist/$(APP_NAME).app /Applications/
+
+uninstall-local: ## Remove app from /Applications
+	rm -rf /Applications/$(APP_NAME).app
 
 install: ## Install dependencies
 	python3 -m venv $(VENV) 2>/dev/null || true
